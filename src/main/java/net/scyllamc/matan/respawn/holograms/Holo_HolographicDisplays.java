@@ -18,7 +18,7 @@ public class Holo_HolographicDisplays implements Holo {
 		if (!Config.SHOW_HOLOGRAMS.getBoolenValue()) 
 			return;
 		
-		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+		ItemStack skull = new ItemStack(Material.LEGACY_SKULL_ITEM, 1, (short) 3);
 		SkullMeta meta = (SkullMeta) skull.getItemMeta();
 		meta.setOwner(p.getName().toString());
 		skull.setItemMeta(meta);

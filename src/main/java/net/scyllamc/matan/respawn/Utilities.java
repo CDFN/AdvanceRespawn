@@ -18,8 +18,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import net.scyllamc.matan.respawn.titles.Title;
-
 public class Utilities {
 
 	
@@ -112,9 +110,9 @@ public class Utilities {
 		List<Integer> unspawnable = Arrays.asList(0, 18, 161);
 		Location current = loc;
 
-		if (unspawnable.contains(loc.getBlock().getTypeId())) {
+		if (unspawnable.contains(loc.getBlock().getType().getId())) {
 
-			while (unspawnable.contains(current.getBlock().getTypeId()) && current.getBlockY() > 0) 
+			while (unspawnable.contains(current.getBlock().getType().getId()) && current.getBlockY() > 0)
 				current = current.add(0, -1, 0);
 			
 
@@ -158,10 +156,10 @@ public class Utilities {
 		if (current.getBlock().isLiquid())
 			return false;
 
-		while (Arrays.asList(18, 161).contains(current_tree.getBlock().getTypeId()) && current_tree.getBlock().getY() >= 0)
+		while (Arrays.asList(18, 161).contains(current_tree.getBlock().getType().getId()) && current_tree.getBlock().getY() >= 0)
 			current_tree = current_tree.add(0, -1, 0);
 
-		if (Arrays.asList(17, 162).contains(current_tree.getBlock().getTypeId()))
+		if (Arrays.asList(17, 162).contains(current_tree.getBlock().getType().getId()))
 			return false;
 
 		return true;
@@ -210,23 +208,22 @@ public class Utilities {
 	}
 
 	public static void deathSpectate(Player player, Location deathLocation, Location respawnLocation, int duration) {
-		
+
 		if (Main.toggledDeathSpectate.contains(player.getUniqueId()))
 			return;
-		
-		final Title title = Main.getTitle();
+
 		final GameMode gameMode = player.getGameMode();
 
 		if ((gameMode == GameMode.CREATIVE || gameMode == GameMode.SPECTATOR) && !Config.SPECTATE_RESPAWN_FOR_PLAYERS_IN_CREATIVE.getBoolenValue())
 			return;
-		
-		title.sendTitle(player, 14, 30, 30, Config.SPECTATE_RESPAWN_PROGRESS_TITLE.getFormattedValue(player, 0), ChatColor.RED + "" + duration);
+
+		player.sendTitle(Config.SPECTATE_RESPAWN_PROGRESS_TITLE.getFormattedValue(player, 0), ChatColor.RED + "" + duration, 14, 30, 30);
 		Main.spectatorsGamemode.put(player.getUniqueId(), gameMode);
-		
+
 		player.setGameMode(GameMode.SPECTATOR);
-		
+
 		new BukkitRunnable() {
-			
+
 			int counter = duration;
 
 			@Override
@@ -243,32 +240,32 @@ public class Utilities {
 				}
 				
 				if (counter > 0) {
-					
+
 					if(player.getLocation().getBlockY() < 0 || player.getWorld() != deathLocation.getWorld() || player.getLocation().distance(deathLocation) > Config.SPECTATE_RESPAWN_MAX_FLY_DISTANCE.getIntValue())
 						player.teleport(deathLocation);
-		
-					title.sendTitle(player, 7, 15, 15, Config.SPECTATE_RESPAWN_PROGRESS_TITLE.getFormattedValue(player, 0), Config.SPECTATE_RESPAWN_PROGRESS_TITLE_LINE2.getFormattedValue(player, counter));
-					
+
+					player.sendTitle(Config.SPECTATE_RESPAWN_PROGRESS_TITLE.getFormattedValue(player, 0), Config.SPECTATE_RESPAWN_PROGRESS_TITLE_LINE2.getFormattedValue(player, counter), 7, 15, 15);
+
 					counter--;
-					
-					return;		
+
+					return;
 				}
 				
 				player.setGameMode(gameMode);
 				player.teleport(respawnLocation);
-				
+
 				if (Main.spectatorsGamemode.containsKey(player.getUniqueId()))
 					Main.spectatorsGamemode.remove(player.getUniqueId());
-				
+
 				if (Main.spectatorsCountdown.containsKey(player.getUniqueId()))
 					Main.spectatorsCountdown.remove(player.getUniqueId());
 
-				
+
 				int distance = (int) Math.round(deathLocation.distance(respawnLocation));
-				title.sendTitle(player, 7, 15, 15, Config.SPECTATE_RESPAWN_TITLE_LINE_1.getFormattedValue(player, distance), Config.SPECTATE_RESPAWN_TITLE_LINE_2.getFormattedValue(player, distance));
+				player.sendTitle(Config.SPECTATE_RESPAWN_TITLE_LINE_1.getFormattedValue(player, distance), Config.SPECTATE_RESPAWN_TITLE_LINE_2.getFormattedValue(player, distance), 7, 15, 15);
 
 				runCommands(player);
-				
+
 				this.cancel();
 			}
 		}.runTaskTimer(Bukkit.getPluginManager().getPlugin("AdvanceRespawn"), 2, 20);

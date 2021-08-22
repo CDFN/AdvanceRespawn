@@ -24,16 +24,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import net.scyllamc.matan.respawn.holograms.Holo;
 import net.scyllamc.matan.respawn.holograms.Holo_Holograms;
 import net.scyllamc.matan.respawn.holograms.Holo_HolographicDisplays;
-import net.scyllamc.matan.respawn.titles.Title;
-import net.scyllamc.matan.respawn.titles.Title_1_10;
-import net.scyllamc.matan.respawn.titles.Title_1_11;
-import net.scyllamc.matan.respawn.titles.Title_1_12;
-import net.scyllamc.matan.respawn.titles.Title_1_13;
-import net.scyllamc.matan.respawn.titles.Title_1_13_1;
-import net.scyllamc.matan.respawn.titles.Title_1_14;
-import net.scyllamc.matan.respawn.titles.Title_1_8;
-import net.scyllamc.matan.respawn.titles.Title_1_9;
-import net.scyllamc.matan.respawn.titles.Title_1_9_4;
 
 public class Main extends JavaPlugin implements Listener {
 
@@ -41,7 +31,6 @@ public class Main extends JavaPlugin implements Listener {
 	public static Logger logger = Bukkit.getLogger();
 	
 	public static boolean usingHolograms = false;
-	public static Title title;
 	public static Holo holo;
 
 	public static Properties casue_dictionary = new Properties();
@@ -69,9 +58,6 @@ public class Main extends JavaPlugin implements Listener {
 		
 		initializeProperties();
 		
-		if (!loadTitle()) 
-			logger.info("Unsupported version for titles, feature disabled");
-		
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -94,63 +80,13 @@ public class Main extends JavaPlugin implements Listener {
 			((HumanEntity) Bukkit.getOfflinePlayer(entry.getKey())).teleport(Events.deathLocations.get(entry.getKey()));
 		}
 		
-		getServer().getScheduler().cancelAllTasks();
+		getServer().getScheduler().cancelTasks(this);
 	}
-
-	
-	public static Title getTitle() {
-		return title;
-	}
-
 	
 	public static Holo getHolo() {
 		return holo;
 	}
-	
-	
-	private static boolean loadTitle() {
-		String version;
 
-		try {
-			version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
-		} catch (ArrayIndexOutOfBoundsException whatVersionAreYouUsingException) {
-			return false;
-		}
-
-		switch (version) {
-		case "v1_14_R1":
-			title = new Title_1_14();
-			break;
-		case "v1_13_R2":
-			title = new Title_1_13_1();
-			break;
-		case "v1_13_R1":
-			title = new Title_1_13();
-			break;
-		case "v1_12_R1":
-			title = new Title_1_12();
-			break;
-		case "v1_11_R1":
-			title = new Title_1_11();
-			break;
-		case "v1_10_R1":
-			title = new Title_1_10();
-			break;
-		case "v1_9_R2":
-			title = new Title_1_9_4();
-			break;
-		case "v1_9_R1":
-			title = new Title_1_9();
-			break;
-		case "v1_8_R3":
-			title = new Title_1_8();
-			break;
-		}
-
-		return title != null;
-	}
-
-	
 	public static boolean getHoloHandler() {
 
 		if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {

@@ -70,8 +70,8 @@ public class Events implements Listener {
 
 		int distance = (int) deathLocation.distance(respawnLocation);
 
-		if (Config.SHOW_RESPAWN_TITLES.getBoolenValue() && Main.title != null) 
-			Main.getTitle().sendTitle(player, 7, 15, 15, Config.RESPAWN_TITLE_LINE_1.getFormattedValue(player, distance), Config.RESPAWN_TITLE_LINE_2.getFormattedValue(player, distance));
+		if (Config.SHOW_RESPAWN_TITLES.getBoolenValue())
+			player.sendTitle(Config.RESPAWN_TITLE_LINE_1.getFormattedValue(player, distance), Config.RESPAWN_TITLE_LINE_2.getFormattedValue(player, distance), 7, 15, 15);
 				
 		if (Config.SPECTATE_RESPAWN.getBoolenValue()) {
 			event.setRespawnLocation(deathLocation);
